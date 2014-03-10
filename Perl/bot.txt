@@ -1,0 +1,150 @@
+mediapartners
+adsaccomponent
+ansearch
+archiver
+argus
+arianna.libero.it
+art-online
+bookmarkchecker
+bordermanager
+bot
+browsermark
+bumblebee
+cd34
+cerberian
+ciml.co.uk
+collector
+commoonity
+crawl
+creep
+deepindex
+demozulator
+dmoz
+docomo
+dual proxy
+earthcom
+efp@gmx
+email extractor
+fastbug
+favicon
+fetch
+firefly
+freeloader
+frontpage
+gatherer
+gazz
+getright
+goldfire
+grub
+harvest
+hatena
+heritrix
+hget
+hosttracker
+htdig
+http client
+httpcheck
+httpclient
+httpconnect
+httpget
+httrack
+ichiro
+iconsurf
+iltrovatore
+index
+indy library
+infoseek
+ingrid
+internetlinkagent
+internetseer
+java
+jeeves
+jobo
+knowledge.com
+larbin
+leechget
+libwww
+link check
+link sleuth
+link validator
+linkcheck
+linkchecker
+linkwalker
+look.com
+lwp
+mediapartners-google
+mercator
+microsoft data access
+microsoft url control
+microsoft-atl-native
+moget
+msproxy
+netants
+netcraft
+netwu
+ocelli
+pavuk
+planethosting
+poe-component
+pompos
+portal manager
+powermark
+pronto
+pverify
+pws.kiosk
+python
+redcarpet
+reifier
+retriever
+robo
+scoop
+scooter
+scrubby
+semanticdiscovery
+shopwiki
+siphon
+sitexpert
+slurp
+spider
+spyder
+sqworm
+star downloader
+supercleaner
+szukacz
+teoma
+teradex
+tkensaku
+tulipchain
+turingos
+unspecified.mail
+vagabondo
+webclipping
+webcollage
+webcraft
+websauger
+webwombat
+wget
+winamp
+zao
+zeus
+zyborg
+mozilla/4.0 (compatible; msie 5.01; windows 98)
+mozilla/4.0 (compatible; msie 6.0; windows nt 5.0; mercury sitescope)
+check_http/1.81 (nagios-plugins 1.4)
+msnptc/1.0 (compatible
+royces_awesome_crawler
+prontospve
+Keynote
+ktxn
+#mozilla/4.0 (compatible; msie 8.0; windows nt 6.1)
+#Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)
+#Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)
+#Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)
+ldspider (ldspider)
+libwww-perl (libwww-perl/5.821)
+PycURL (PycURL/7.23.1)
+python-requests (python-requests)
+snoopy (Snoopy v1.2)
+webcopier (WebCopier v4.6)
+wget (Wget/1.9.1)
+curl (curl/7.9.8 libcurl 7.9.8)
