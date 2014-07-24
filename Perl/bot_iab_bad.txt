@@ -1,0 +1,330 @@
+1job|1||0|0|0
+abot|1||0|0|0
+agentname|1||0|1|0
+apachebench|1||0|0|0
+applesyndication|1||0|0|0
+ask jeeves|1||0|0|0
+ask+jeeves|1||0|0|0
+atomz|1||0|0|0
+avantgo|1||0|2|0
+baiduspider|1||0|0|0
+blitzbot|1||0|0|0
+bloglines|1||0|0|0
+bordermanager|1||0|2|0
+changedetection|1||0|2|0
+check_http|1||0|0|0
+checkurl|1||0|0|0
+chkd|1||0|0|0
+contype|1||0|0|0
+cosmos|1||0|0|0
+Download Ninja|1||1|1|0
+Download+Ninja|1||1|1|0
+dts agent|1||0|2|0
+dts+agent|1||0|2|0
+favorg|1||0|0|0
+flashget|1||0|0|0
+frontier|1||0|2|0
+getright|1||0|1|0
+golem|1||0|1|0
+gomezagent|1||0|2|0
+googlebot|1||0|2|0
+grabber|1||0|0|0
+ia_archive|1||0|0|0
+ibot|1||0|0|0
+ichiro|1||0|0|0
+IEAutoDiscovery|1||0|0|0
+indy library|1||0|2|0
+indy+library|1||0|2|0
+infolink|1||0|1|0
+internet ninja|1||1|1|0
+internet+ninja|1||1|1|0
+internetseer|1||0|0|0
+isilo|1||0|0|0
+jakarta|1||0|0|0
+jobo|1||0|0|0
+justview|1||0|1|0
+keynote|1||0|2|0
+larbin|1||0|2|0
+libwww-perl|1||0|1|0
+linkbot|1||0|2|0
+linkchecker|1||0|2|0
+linklint|1||0|0|0
+linkscan|1||0|0|0
+linkwalker|1||0|0|0
+lisa|1||0|0|0
+lwp|1||0|2|1
+lydia|1||0|0|0
+magus bot|1||0|0|0
+magus+bot|1||0|0|0
+mediapartners-google|1||0|0|0
+mfc_tear_sample|1||0|0|0
+microsoft scheduled cache content download service|1||0|0|0
+microsoft url control|1||1|2|0
+microsoft+scheduled+cache+content+download+service|1||0|0|0
+microsoft+url+control|1||1|2|0
+miva|1||0|0|0
+mj12bot|1||0|0|0
+monitor|1||0|1|0
+monster|1||0|1|0
+mozilla/5.0 (compatible; msie 5.0)|1||0|2|0
+mozilla/5.0+(compatible;+msie+5.0)|1||0|2|0
+ms frontpage|1||0|1|0
+MS Search|1||0|1|0
+ms+frontpage|1||0|1|0
+MS+Search|1||0|1|0
+MSNPTC|1||1|1|0
+nbot|1||0|0|0
+newsnow|1||0|0|0
+nomad|1||0|1|0
+nutch|1||0|0|0
+nutscrape|1||0|0|0
+ocelli|1||0|0|0
+patric|1||0|1|0
+pioneer|1||0|1|0
+pluck|1||0|0|0
+plumtree|1||0|0|0
+powermarks|1||0|1|0
+psbot|1||0|0|0
+rpt-http|1||0|2|0
+rssreader|1||0|0|0
+scooter|1||0|0|0
+seekbot|1||0|0|0
+sherlock|1||0|0|0
+shopwiki|1||0|0|0
+slurp|1||0|2|0
+sucker|1||0|1|0
+templeton|1||0|1|0
+/teoma|1||0|2|0
+thunderstone|1||0|1|0
+t-h-u-n-d-e-r-s-t-o-n-e|1||0|1|0
+topix|1||0|0|0
+ukonline|1||0|0|0
+ultraseek|1||0|0|0
+urchin|1||0|0|0
+vagabondo|1||0|0|0
+voyager|1||0|2|0
+web downloader|1||0|1|0
+web+downloader|1||0|1|0
+webauto|1||0|1|0
+webcapture|1||0|2|0
+webcheck|1||0|0|0
+WebCopier|1||1|1|0
+webdup|1||0|2|0
+webtool|1||0|1|0
+wget|1||0|2|0
+xenu|1||0|0|0
+yacy|1||0|0|0
+zealbot|1||0|0|0
+zeus|1||0|0|0
+ez publish link validator|1||0|0|0
+ez+publish+link+validator|1||0|0|0
+Goldfire|1||0|0|0
+SiteVigil|1||0|0|0
+iOpus|1||0|2|0
+Microsoft BITS|1||0|0|0
+Microsoft+BITS|1||0|0|0
+heritrix|1||0|0|0
+yahoofeedseeker|1||0|2|0
+internal zero-knowledge agent|1||0|2|0
+internal+zero-knowledge+agent|1||0|2|0
+SurveyBot/|1||0|2|0
+Liferea|1||0|2|0
+YahooSeeker|1||0|2|0
+FindLinks|1||0|2|0
+oodlebot|1||0|2|0
+AdsBot-Google|1||0|1|0
+InnovantageBot|1||0|2|0
+KHTE|1||0|2|0
+KTXN|1||0|2|0
+Advanced Email Extractor|1||0|2|0
+Advanced+Email+Extractor|1||0|2|0
+Moreoverbot|1||0|2|0
+webbot|1||0|2|0
+panscient.com|1||0|2|0
+Snoopy|1||0|2|0
+bot/1.0|1||0|2|0
+UniversalSearch|1||0|2|0
+Maxamine|1||0|2|0
+Argus|1||0|2|0
+Google Wireless Transcoder|1||0|1|0
+Google+Wireless+Transcoder|1||0|1|0
+ClickAJob|1||0|2|0
+JobRapido|1||0|2|0
+Python-urllib|1||1|2|0
+iSearch|1||0|2|0
+http://bot.ims.ca|1||0|2|0
+System Center Operations Manager|1||1|2|0
+System+Center+Operations+Manager|1||1|2|0
+JoeDog|1||1|2|0
+websitepulse|1||1|2|0
+BitvoUserAgent|1||0|2|0
+Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;1813)|1||0|2|0
+Mozilla/4.0+(compatible;+MSIE+6.0;+Windows+NT+5.1;1813)|1||0|2|0
+Paros|1||0|2|0
+Watchmouse|1||1|2|0
+Proximic|1||0|2|0
+Scoutjet|1||0|2|0
+Twiceler|1||1|2|0
+Pingdom|1||0|2|0
+Europarchive|1||0|2|0
+Webmetrics|1||0|2|0
+holmes|1||1|2|0
+AlertSite|1||0|2|0
+Yahoo Pipes|1||0|2|0
+Yahoo+Pipes|1||0|2|0
+SimplePie|1||1|2|0
+Drupal|1||1|2|0
+HTMLParser|1||1|2|0
+Watchfire WebXM|1||1|2|0
+Watchfire+WebXM|1||1|2|0
+SnapPreviewBot|1||0|2|0
+DAUMOA|1||0|2|0
+FDM 3.x|1||1|2|1
+FDM+3.x|1||1|2|1
+Trovit|1||0|2|0
+RiverglassScanner|1||1|2|0
+Wepbot|1||1|2|0
+Siteimprove|1||0|2|0
+archive.org|1||0|2|0
+VocusBot|1||0|2|0
+Fairshare|1||0|2|0
+BLP_bbot|1||1|2|0
+W3C_Validator|1||1|2|0
+Dotbot|1||1|2|0
+(simulated_by_Webserver_Stress_Tool)|1||0|2|0
+Linguee Bot|1||1|2|0
+Linguee+Bot|1||1|2|0
+WAPT|1||1|2|0
+updatepatrol|1||0|2|0
+SiteCon|1||0|2|0
+twitterbot|1||1|2|0
+richmetrics.com/bot|1||1|2|0
+bingbot|1||0|2|0
+WWW-Mechanize|1||1|2|0
+Google Web Preview|1||0|2|0
+Google+Web+Preview|1||0|2|0
+ADGBOT|1||0|2|0
+httpunit|1||1|2|0
+PostRank|1||1|2|0
+HttpComponents|1||1|2|0
+Twisted PageGetter|1||1|2|0
+Twisted+PageGetter|1||1|2|0
+AppEngine-Google|1||0|2|0
+YioopBot|1||0|2|0
+Flamingo_SearchEngine|1||1|2|0
+Atomic_Email_Hunter|1||1|2|0
+FeedBurner|1||1|2|0
+talktalk|1||0|2|0
+facebookexternalhit|1||1|2|0
+adbeat|1||0|2|0
+SJN|1||1|2|1
+outbrain|1||0|2|0
+TweetmemeBot|1||0|2|0
+WASALive|1||0|2|0
+wikiwix-bot|1||1|2|0
+Ezooms|1||0|2|0
+HiScan|1||0|2|0
+d24y-aegis|1||0|2|0
+Google-HotelAdsVerifier|1||0|2|0
+FupBot|1||0|2|0
+moatbot|1||0|2|0
+VMCbot|1||1|2|0
+companydatatree|1||0|2|0
+CookieReports|1||0|2|0
+BingPreview|1||0|2|0
+Scan|1||1|2|1
+flamingosearch|1||0|2|0
+Reconnoiter|1||1|2|0
+citeseerxbot|1||0|2|0
+Funnelback|1||0|2|0
+Feed43|1||0|2|0
+auditbot|1||0|2|0
+Genieo|1||0|2|0
+NerdByNature|1||0|2|0
+Python-httplib|1||1|2|0
+Cutbot|1||1|2|0
+Server Density External Llama|1||1|2|0
+Server+Density+External+Llama|1||1|2|0
+MNA Digital Circonus Check|1||1|2|0
+MNA+Digital+Circonus+Check|1||1|2|0
+Aware|1||1|2|1
+scanalert|1||0|2|0
+catchpoint|1||0|2|0
+discoverybot|1||0|2|0
+Jooblebot|1||0|2|0
+bitlybot|1||1|2|0
+ADR)|1||0|2|0
+AdometryBot|1||0|2|0
+TSMbot|1||0|2|0
+OrangeBot-Mobile|1||0|2|0
+PhantomJS|1||0|2|0
+Apache-HttpClient/4.1.1 (java 1.5)|1||1|2|0
+Apache-HttpClient/4.1.1+(java+1.5)|1||1|2|0
+tagscanner|1||0|2|0
+LoadImpactPageAnalyzer|1||1|2|0
+CFSCHEDULE|1||1|2|0
+searchme.com/support/|1||0|2|0
+MetaURI|1||1|2|0
+Apache-HttpClient/4.2.2|1||1|2|0
+cXensebot|1||0|2|0
+linkdex|1||1|2|0
+SearchBot|1||0|2|0
+ColdFusion|1||1|2|0
+Open Web Analytics Bot|1||1|2|0
+Open+Web+Analytics+Bot|1||1|2|0
+YahooExternalCache|1||1|2|0
+HP SiteScope|1||1|2|0
+HP+SiteScope|1||1|2|0
+Nielsen|1||0|2|0
+Feedzilla|1||1|2|0
+Superfeedr|1||1|2|0
+ActiveXperts|1||0|2|0
+F5Agent|1||1|2|0
+Java/|1||1|1|1
+MixrankBot|1||0|2|0
+Squider|1||0|2|0
+kulturarw|1||0|2|0
+topsy.com/butterfly/|1||0|2|0
+Neustar|1||0|2|0
+InAGist URL Resolver|1||1|2|1
+InAGist+URL+Resolver|1||1|2|1
+Crowsnest/|1||1|2|1
+kraken/|1||1|2|1
+JS-Kit URL Resolver|1||1|2|1
+JS-Kit+URL+Resolver|1||1|2|1
+python-requests/|1||1|2|1
+Scrapy/|1||1|2|1
+imgsizer|1||0|2|0
+PTST|1||0|2|0
+WeSEE:Search|1||1|2|0
+ContextAd Bot|1||1|2|0
+ContextAd+Bot|1||1|2|0
+ADmantX|1||1|2|0
+Google-HTTP-Java-Client|1||1|2|0
+YahooCacheSystem|1||1|2|0
+aport|1|netaporter, OperaPortable|0|2|0
+b2w|1|B2WTenisnew|0|0|0
+combine|1|Combined|0|0|0
+crawl|1|BookCrawler|0|2|0
+crescent|1|Crescent Build, Crescent+Build|0|1|0
+curl|1|Curlings, RipCurl|0|0|0
+dialer|1|PictureDialer|0|1|0
+echo|1|bonecho, EchoArena, Echofon|0|1|0
+fetch|1|FetchTV|0|2|0
+grub|1|DoodleGrub, MacGruber|0|0|0
+harvest|1|ghostharvest|0|1|0
+httrack|1|FlightTrack|0|1|0
+newsapp|1|EuroNewsApp|0|0|0
+ng/2.0|1|DoneDrinking|0|0|0
+obot|1|robotics, TheRobotFree|0|0|0
+pita|1|spital, Capital|0|1|0
+sohu|1|SohuEnNews|0|0|0
+spider|1|SpiderSolitaire|0|2|0
+spike|1|Spikey|0|1|0
+stuff|1|StuffNZ|0|2|0
+teleport|1|iTeleport|0|2|0
+webtrends|1|WebtrendsClientLibrary|0|0|0
+worm|1|DeathWormGame|0|2|0
+yandex|1|yandex browser, yandex+browser, YandexMail|0|0|0
+Freedom|1|FreedomFrom|0|2|0
+Seznam|1|Edition Seznam, Edition+Seznam|0|2|0

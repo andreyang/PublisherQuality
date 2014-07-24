@@ -1,0 +1,405 @@
+create table ayang.ay_temp_pq_20140201_07 as
+select 	params['rg_event'] rg_event,
+		params['rg_action'] rg_action,
+		params['rg_settings'] rg_settings,
+		params['rg_session'] cookie,
+		params['rg_visible'] rg_visible,
+		params['rg_iframe'] rg_iframe,
+		ip,
+		time_local,
+		COALESCE(params['rg_instance'], params['rg_page_host_url']) player_instance,
+		params['rg_publisher'] rg_publisher,
+		y,
+		m,
+		d
+from player.data_primitive
+where y = '2014' 
+and m = '02' 
+and d IN ('01', '02', '03', '04', '05', '06', '07')
+--and d IN ('08', '09', '10', '11', '12', '13', '14')
+--and d IN ('15', '16', '17', '18', '19', '20', '21')
+--and d IN ('22', '23', '24', '25', '26', '27', '28', '29', '30', '31')
+and (params['rg_event'] IN ('adPlaying', 'playerReady', 'jwplayerReady', 'adNotEnabled', 'adError', 'adsStopped', 'rgError', 'adAbsent', 'adClicked2Site', 'adSkipped') 
+     or (params['rg_event'] IN ('playerMediaTime', 'jwplayerMediaTime') and params['rg_category'] like 'Stream%Progress' and (params['rg_counter'] like '%+0' or params['rg_counter'] like '%\%200'))
+     or params['rg_event'] like '%playerMediaMute'
+     or params['rg_event'] like '%playerMediaVolume'
+    )
+--we should include missing cookie records for IP based filtering
+--and params['rg_session'] <> 'undefined'
+and params['rg_publisher'] not IN ('localhost', '127.0.0.1')
+;
+
+create table ay_temp_pq_sum_20140201_07 as
+select y, m, d, 
+	rg_publisher,
+	--skip records for cookie/ip comparison
+	count(distinct case when cookie <> '' and cookie <> 'undefined' then ip else NULL end) ip_ct_neat, 
+	count(distinct case when cookie <> '' and cookie <> 'undefined' then cookie else NULL end) cookie_ct_neat,
+	sum(case when cookie <> '' and cookie <> 'undefined' and rg_event like '%playerMediaTime' then 1 else 0 end) stream_ct_neat,
+	sum(case when cookie <> '' and cookie <> 'undefined' and rg_event = 'adPlaying' then 1 else 0 end) ad_ct_neat,
+	count(distinct case when cookie <> '' and cookie <> 'undefined' and rg_event like '%playerReady' then CONCAT(cookie,COALESCE(player_instance,'na')) else NULL end) player_ct_neat,
+	--player stats
+	count(distinct cookie) cookie_ct,
+	count(distinct ip) ip_ct,
+	count(distinct case when rg_event like '%playerReady' then CONCAT(cookie,COALESCE(player_instance,'na')) else NULL end) player_ct,
+	sum(case when rg_event like '%playerReady' then 1 else 0 end) impression,
+	count(distinct case when rg_event like '%playerMediaTime' then CONCAT(cookie, COALESCE(player_instance,'na')) else NULL end) clicked_player_ct,
+	count(distinct case when rg_event like '%playerMediaVolume' then CONCAT(cookie, player_instance) else NULL end) player_adjusted_volume_ct,
+	count(distinct case when rg_event like '%playerMediaMute' and rg_action like 'Mute%true' then CONCAT(cookie, COALESCE(player_instance,'na')) else NULL end) player_muted_ct,
+	count(distinct case when rg_event = 'adNotEnabled' then CONCAT(cookie, COALESCE(player_instance,'na')) else NULL end) player_adNotEnabled_ct,
+	--work around an config issue with overlay ads
+	count(distinct case when rg_event = 'adAbsent' and rg_action not like '%branding%' then CONCAT(cookie, COALESCE(player_instance,'na')) else NULL end) player_adAbsent_ct,
+	count(distinct case when rg_event like '%playerReady' and rg_iframe = 'true' then CONCAT(cookie, COALESCE(player_instance,'na')) else NULL end) player_in_iframe_ct,
+	count(distinct case when rg_event like '%playerReady' and rg_visible = '100%25' then CONCAT(cookie, COALESCE(player_instance,'na')) else NULL end) player_visible_ct,
+	--stream stats
+	sum(case when rg_event like '%playerMediaTime' then 1 else 0 end) stream_ct,
+	sum(case when rg_event like '%playerMediaTime' and rg_settings like '%Volume:\%200\%20%' then 1 else 0 end) stream_0_volume_ct,
+	sum(case when rg_event like '%playerMediaTime' and rg_settings like '%Autostart:\%20true' then 1 else 0 end) stream_autostart_ct,
+	--ads stats
+	sum(case when rg_event = 'adPlaying' then 1 else 0 end) ad_ct,
+	sum(case when rg_event = 'adClicked2Site' then 1 else 0 end) adClicked2Site,
+	sum(case when rg_event = 'adSkipped' then 1 else 0 end) adSkipped,
+	sum(case when rg_event = 'adsStopped' then 1 else 0 end) adsStopped,
+	sum(case when rg_event = 'adError' then 1 else 0 end) adError
+from ay_temp_pq_20140201_07
+group by y, m, d, rg_publisher
+;
+
+--loop through 7 days due to hive performance issue
+drop table ay_temp_site_ip;
+create table ay_temp_site_ip as
+select distinct y, m, d, ip, rg_publisher
+from ay_temp_pq_20140201_07
+where d = '01' 
+;
+
+--cross visit index report
+create table ay_temp_overlap_ip_20140201 as
+select a.y, a.m, a.d, a.rg_publisher, count(distinct a.ip) ip_ct, count(distinct case when a.rg_publisher = b.rg_publisher then NULL else b.ip end) overlap_ip_ct
+from ay_temp_site_ip a left outer join ay_temp_site_ip b
+on (a.ip = b.ip and a.y = b.y and a.m = b.m and a.d = b.d)
+group by a.y, a.m, a.d, a.rg_publisher
+;
+
+create table ay_temp_overlap_ip_20140201_07 as
+select * from (select * from ay_temp_overlap_ip_20140201
+union all
+select * from ay_temp_overlap_ip_20140202
+union all
+select * from ay_temp_overlap_ip_20140203
+union all
+select * from ay_temp_overlap_ip_20140204
+union all
+select * from ay_temp_overlap_ip_20140205
+union all
+select * from ay_temp_overlap_ip_20140206
+union all
+select * from ay_temp_overlap_ip_20140207
+) t
+;
+
+drop table ay_temp_overlap_ip_20140201;
+drop table ay_temp_overlap_ip_20140202;
+drop table ay_temp_overlap_ip_20140203;
+drop table ay_temp_overlap_ip_20140204;
+drop table ay_temp_overlap_ip_20140205;
+drop table ay_temp_overlap_ip_20140206;
+drop table ay_temp_overlap_ip_20140207;
+
+drop table ay_temp_bot_filter;
+create table ay_temp_bot_filter as
+select reflect('java.net.URLDecoder', 'decode', a.rg_publisher, 'utf-8') rg_publisher,
+	case when a.rg_event = 'adPlaying' then 'ad' when rg_event like '%playerMediaTime' then 'stream' end rg_event,
+	sum(case when COALESCE(ci.note, c.note, i.note) is not NULL then 1 else 0 end) bot_ct,  
+	count(*) ct,
+	round(sum(case when COALESCE(ci.note, c.note, i.note) is not NULL then 1 else 0 end)/count(*),4) bot
+from (select * from ayang.ay_temp_pq_20140201_07 where rg_event = 'adPlaying' or rg_event like '%playerMediaTime'
+      union all
+      select * from ayang.ay_temp_pq_20140208_14 where rg_event = 'adPlaying' or rg_event like '%playerMediaTime'
+      union all
+      select * from ayang.ay_temp_pq_20140215_21 where rg_event = 'adPlaying' or rg_event like '%playerMediaTime'
+      union all
+      select * from ayang.ay_temp_pq_20140222_31 where rg_event = 'adPlaying' or rg_event like '%playerMediaTime'
+      ) a
+	left outer join (select cookie, ip, CONCAT('T1 - ', note) note from ayang.banned_cookie_ip) ci
+	on (a.cookie = ci.cookie and a.ip = ci.ip)
+	left outer join (select ip, y, m, d, CONCAT('T3 ip - ', note) note from ayang.banned_ip where note = '10 stddev') i
+	on (a.ip = i.ip and a.y = i.y and a.m = i.m and a.d = i.d)
+	left outer join (select cookie, CONCAT('T2 cookie - ', note) note from ayang.banned_cookie where note = '10 stddev') c
+	on (a.cookie = c.cookie)
+group by reflect('java.net.URLDecoder', 'decode', a.rg_publisher, 'utf-8'),
+	case when a.rg_event = 'adPlaying' then 'ad' when rg_event like '%playerMediaTime' then 'stream' end
+having count(*) >= 1000
+;
+
+select csm.company,
+	regexp_replace(a.rg_publisher, ',', '') publisher,
+	COALESCE(min(c.bot),min(d.bot)) bot_filter,
+	round(sum(a.cookie_ct_neat)/sum(a.ip_ct_neat),2) cookie_per_ip,
+	round(min(b.overlap_ip_ct)/min(b.ip_ct),4) cross_visit,
+	round(sum(a.ad_ct_neat)/sum(a.ip_ct_neat),2) ads_per_ip,
+	round(sum(a.stream_ct_neat)/sum(a.ip_ct_neat),2) stream_per_ip,
+	--sum(a.ip_ct_neat) ip_ct_neat, 
+	--sum(a.cookie_ct_neat) cookie_ct_neat,
+	--sum(a.stream_ct_neat) stream_ct_neat,
+	--sum(a.ad_ct_neat) ad_ct_neat,
+	--sum(a.player_ct_neat) player_ct_neat,
+	--player stats
+	--sum(cookie_ct) cookie_ct,
+	--sum(a.ip_ct) ip_ct,
+	sum(a.player_ct) player_ct,
+--	sum(a.impression) impression,
+	round(sum(a.clicked_player_ct)/sum(a.player_ct),4) player_clicked,
+	round(sum(a.player_adjusted_volume_ct)/sum(a.player_ct),4) player_adjusted_volume,
+	round(sum(a.player_muted_ct)/sum(a.player_ct),4) player_muted,
+	round(sum(a.player_adNotEnabled_ct)/sum(a.player_ct),4) player_adNotEnabled,
+	round(sum(a.player_adAbsent_ct)/sum(a.player_ct),4) player_adAbsent,
+	round(sum(a.player_in_iframe_ct)/sum(a.player_ct),4) player_in_iframe,
+	round(sum(player_visible_ct)/sum(a.player_ct),4) player_visible,
+	--stream stats
+	sum(a.stream_ct) stream_ct,
+	round(sum(a.stream_0_volume_ct)/sum(a.stream_ct),4) stream_0_volume,
+	round(sum(a.stream_autostart_ct)/sum(a.stream_ct),4) stream_autostart,
+	--ads stats
+	sum(a.ad_ct) ad_ct,
+	round(sum(a.adClicked2Site)/sum(a.ad_ct),4) adClicked2Site,
+	sum(a.adSkipped) adSkipped,
+	sum(a.adsStopped) adsStopped,
+	sum(a.adError) adError
+from (
+	select reflect('java.net.URLDecoder', 'decode', rg_publisher, 'utf-8') rg_publisher,
+	sum(ip_ct_neat) ip_ct_neat, 
+	sum(cookie_ct_neat) cookie_ct_neat,
+	sum(stream_ct_neat) stream_ct_neat,
+	sum(ad_ct_neat) ad_ct_neat,
+	sum(player_ct_neat) player_ct_neat,
+	--player stats
+	sum(cookie_ct) cookie_ct,
+	sum(ip_ct) ip_ct,
+	sum(player_ct) player_ct,
+	sum(clicked_player_ct) clicked_player_ct,
+	sum(player_adjusted_volume_ct) player_adjusted_volume_ct,
+	sum(player_muted_ct) player_muted_ct,
+	sum(player_adNotEnabled_ct) player_adNotEnabled_ct,
+	sum(case when player_adAbsent_ct > player_ct then player_ct else player_adAbsent_ct end) player_adAbsent_ct,
+	sum(player_in_iframe_ct) player_in_iframe_ct,
+	sum(player_visible_ct) player_visible_ct,
+	--stream stats
+	sum(stream_ct) stream_ct,
+	sum(stream_0_volume_ct) stream_0_volume_ct,
+	sum(stream_autostart_ct) stream_autostart_ct,
+	--ads stats
+	sum(ad_ct) ad_ct,
+	sum(adClicked2Site) adClicked2Site,
+	sum(adSkipped) adSkipped,
+	sum(adsStopped) adsStopped,
+	sum(adError) adError
+	from ay_temp_pq_sum_20140201_07
+	group by reflect('java.net.URLDecoder', 'decode', rg_publisher, 'utf-8')
+	union all
+	select reflect('java.net.URLDecoder', 'decode', rg_publisher, 'utf-8') rg_publisher,
+	sum(ip_ct_neat) ip_ct_neat, 
+	sum(cookie_ct_neat) cookie_ct_neat,
+	sum(stream_ct_neat) stream_ct_neat,
+	sum(ad_ct_neat) ad_ct_neat,
+	sum(player_ct_neat) player_ct_neat,
+	--player stats
+	sum(cookie_ct) cookie_ct,
+	sum(ip_ct) ip_ct,
+	sum(player_ct) player_ct,
+	sum(clicked_player_ct) clicked_player_ct,
+	sum(player_adjusted_volume_ct) player_adjusted_volume_ct,
+	sum(player_muted_ct) player_muted_ct,
+	sum(player_adNotEnabled_ct) player_adNotEnabled_ct,
+	sum(case when player_adAbsent_ct > player_ct then player_ct else player_adAbsent_ct end) player_adAbsent_ct,
+	sum(player_in_iframe_ct) player_in_iframe_ct,
+	sum(player_visible_ct) player_visible_ct,
+	--stream stats
+	sum(stream_ct) stream_ct,
+	sum(stream_0_volume_ct) stream_0_volume_ct,
+	sum(stream_autostart_ct) stream_autostart_ct,
+	--ads stats
+	sum(ad_ct) ad_ct,
+	sum(adClicked2Site) adClicked2Site,
+	sum(adSkipped) adSkipped,
+	sum(adsStopped) adsStopped,
+	sum(adError) adError
+	from ay_temp_pq_sum_20140208_14
+	group by reflect('java.net.URLDecoder', 'decode', rg_publisher, 'utf-8')
+	union all
+	select reflect('java.net.URLDecoder', 'decode', rg_publisher, 'utf-8') rg_publisher,
+	sum(ip_ct_neat) ip_ct_neat, 
+	sum(cookie_ct_neat) cookie_ct_neat,
+	sum(stream_ct_neat) stream_ct_neat,
+	sum(ad_ct_neat) ad_ct_neat,
+	sum(player_ct_neat) player_ct_neat,
+	--player stats
+	sum(cookie_ct) cookie_ct,
+	sum(ip_ct) ip_ct,
+	sum(player_ct) player_ct,
+	sum(clicked_player_ct) clicked_player_ct,
+	sum(player_adjusted_volume_ct) player_adjusted_volume_ct,
+	sum(player_muted_ct) player_muted_ct,
+	sum(player_adNotEnabled_ct) player_adNotEnabled_ct,
+	sum(case when player_adAbsent_ct > player_ct then player_ct else player_adAbsent_ct end) player_adAbsent_ct,
+	sum(player_in_iframe_ct) player_in_iframe_ct,
+	sum(player_visible_ct) player_visible_ct,
+	--stream stats
+	sum(stream_ct) stream_ct,
+	sum(stream_0_volume_ct) stream_0_volume_ct,
+	sum(stream_autostart_ct) stream_autostart_ct,
+	--ads stats
+	sum(ad_ct) ad_ct,
+	sum(adClicked2Site) adClicked2Site,
+	sum(adSkipped) adSkipped,
+	sum(adsStopped) adsStopped,
+	sum(adError) adError
+	from ay_temp_pq_sum_20140215_21
+	group by reflect('java.net.URLDecoder', 'decode', rg_publisher, 'utf-8')
+	union all
+	select reflect('java.net.URLDecoder', 'decode', rg_publisher, 'utf-8') rg_publisher,
+	sum(ip_ct_neat) ip_ct_neat, 
+	sum(cookie_ct_neat) cookie_ct_neat,
+	sum(stream_ct_neat) stream_ct_neat,
+	sum(ad_ct_neat) ad_ct_neat,
+	sum(player_ct_neat) player_ct_neat,
+	--player stats
+	sum(cookie_ct) cookie_ct,
+	sum(ip_ct) ip_ct,
+	sum(player_ct) player_ct,
+	sum(clicked_player_ct) clicked_player_ct,
+	sum(player_adjusted_volume_ct) player_adjusted_volume_ct,
+	sum(player_muted_ct) player_muted_ct,
+	sum(player_adNotEnabled_ct) player_adNotEnabled_ct,
+	sum(case when player_adAbsent_ct > player_ct then player_ct else player_adAbsent_ct end) player_adAbsent_ct,
+	sum(player_in_iframe_ct) player_in_iframe_ct,
+	sum(player_visible_ct) player_visible_ct,
+	--stream stats
+	sum(stream_ct) stream_ct,
+	sum(stream_0_volume_ct) stream_0_volume_ct,
+	sum(stream_autostart_ct) stream_autostart_ct,
+	--ads stats
+	sum(ad_ct) ad_ct,
+	sum(adClicked2Site) adClicked2Site,
+	sum(adSkipped) adSkipped,
+	sum(adsStopped) adsStopped,
+	sum(adError) adError
+	from ay_temp_pq_sum_20140222_31
+	group by reflect('java.net.URLDecoder', 'decode', rg_publisher, 'utf-8')
+	) a
+	left outer join
+	(select reflect('java.net.URLDecoder', 'decode', rg_publisher, 'utf-8') rg_publisher, 
+	sum(ip_ct) ip_ct, 
+	sum(overlap_ip_ct) overlap_ip_ct
+	from ay_temp_overlap_ip_20140201_07
+	group by reflect('java.net.URLDecoder', 'decode', rg_publisher, 'utf-8')
+	) b
+	on (a.rg_publisher = b.rg_publisher)
+	left outer join (select * from ay_temp_bot_filter where rg_event = 'ad') c
+	on (a.rg_publisher = c.rg_publisher)
+	left outer join (select * from ay_temp_bot_filter where rg_event = 'stream') d
+	on (a.rg_publisher = d.rg_publisher)
+	left outer join ayang.company_site_map csm
+	on (a.rg_publisher = csm.rg_publisher)
+where a.rg_publisher <> 'undefined' and a.rg_publisher <> 'Test'
+group by csm.company, regexp_replace(a.rg_publisher, ',', '')
+having sum(a.stream_ct) >= 1000
+;
+
+--player type by site
+select reflect('java.net.URLDecoder', 'decode', regexp_replace(a.rg_publisher, ',', ''), 'utf-8'),
+	case when rg_event = 'jwplayerReady' then 'cocoon' else 'monarch' end player_type,
+	count(*) player_ct
+from (select rg_publisher, rg_event
+      from ayang.ay_temp_pq_20140201_07
+      where rg_event like '%playerReady'
+      union all
+      select rg_publisher, rg_event
+      from ayang.ay_temp_pq_20140201_07
+      where rg_event like '%playerReady'
+      union all
+      select rg_publisher, rg_event
+      from ayang.ay_temp_pq_20140201_07
+      where rg_event like '%playerReady'
+      union all
+      select rg_publisher, rg_event
+      from ayang.ay_temp_pq_20140201_07
+      where rg_event like '%playerReady') a
+group by 
+      reflect('java.net.URLDecoder', 'decode', regexp_replace(a.rg_publisher, ',', ''), 'utf-8'),
+      case when rg_event = 'jwplayerReady' then 'cocoon' else 'monarch' end
+;
+
+--player type by site
+select reflect('java.net.URLDecoder', 'decode', regexp_replace(a.rg_publisher, ',', ''), 'utf-8'),
+	max(case when rg_event = 'jwplayerReady' then 'yes' else 'no' end) has_cocoon_player,
+	max(case when rg_event = 'playerReady' then 'yes' else 'no' end) has_monarch_player
+from (select rg_publisher, rg_event
+      from ayang.ay_temp_pq_20140201_07
+      where rg_event like '%playerReady'
+      union all
+      select rg_publisher, rg_event
+      from ayang.ay_temp_pq_20140201_07
+      where rg_event like '%playerReady'
+      union all
+      select rg_publisher, rg_event
+      from ayang.ay_temp_pq_20140201_07
+      where rg_event like '%playerReady'
+      union all
+      select rg_publisher, rg_event
+      from ayang.ay_temp_pq_20140201_07
+      where rg_event like '%playerReady') a
+group by reflect('java.net.URLDecoder', 'decode', regexp_replace(a.rg_publisher, ',', ''), 'utf-8')
+
+/**
+create table ay_temp_ads_stats as
+select y, m, d, rg_publisher, 
+sum(case when rg_event = 'adClicked2Site' then 1 else 0 end) adClicked2Site,
+sum(case when rg_event = 'adSkipped' then 1 else 0 end) adSkipped,
+sum(case when rg_event = 'adStoppped' then 1 else 0 end) adStopped,
+sum(case when rg_event = 'adError' then 1 else 0 end) adError
+from ay_temp_pq
+where rg_event = 'adClicked2Site' or rg_event = 'adSkipped' or rg_event = 'adStopped' or rg_event = 'adError'
+group by y, m, d, rg_publisher
+;
+
+create table ay_temp_stream_stats as
+select ...
+
+create table ay_temp_player_stats as
+select y, m, d, rg_publisher,
+	count(distinct case when rg_event like '%playerMediaTime' then CONCAT(cookie, COALESCE(player_instance,'na')) else NULL end) clicked_player_ct,
+	count(distinct case when rg_event like '%playerMediaVolume' then CONCAT(cookie, player_instance) else NULL end) player_volume_ct,
+	count(distinct case when rg_event like '%playerMediaMute' and rg_action like 'Mute%true' then CONCAT(cookie, COALESCE(player_instance,'na')) else NULL end) player_mute_ct,
+	count(distinct case when rg_event = 'adNotEnabled' then CONCAT(cookie, COALESCE(player_instance,'na')) else NULL end) player_adNotEnabled_ct,
+	count(distinct case when rg_event = 'adAbsent' then CONCAT(cookie, COALESCE(player_instance,'na')) else NULL end) player_adAbsent_ct,
+	count(distinct case when rg_event like '%playerReady' and rg_iframe = 'TRUE' then CONCAT(cookie, COALESCE(player_instance,'na')) else NULL end) player_in_iframe_ct,
+	count(distinct case when rg_event like '%playerReady' and rg_visible = '100%25' then CONCAT(cookie, COALESCE(player_instance,'na')) else NULL end) player_visible_ct	
+from ay_temp_pq
+where rg_event like '%playerMediaVolume' 
+	or rg_event like '%playerMediaMute' 
+	or rg_event like '%playerMediaTime' 
+	or rg_event like '%playerReady' 
+	or rg_event = 'adNotEnabled' 
+	or rg_event = 'adAbsent'
+group by y, m, d, rg_publisher
+;
+**/
+
+numbers of ads viewed per user
+o	number of IP changes per user
+o	number of streams/ads per user or IP
+o	number of streams per player instance
+o	percent of players clicked
+o	percent of users cross visited other sites within ULN
+o	CTR
+o	percent of players with volume change
+o	percent of muted player
+o	percent of players with no ads
+o	percent of ads skipped
+o	percent of ads completed
+o	percent of ads disabled
+o	perentt of video completed
+o	iframe
+o	autolaunch
+o	muted/0 volume
